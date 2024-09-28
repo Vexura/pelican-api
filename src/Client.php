@@ -7,6 +7,8 @@ use PelicanPanel\Database\Database;
 use PelicanPanel\Database\Host;
 use PelicanPanel\ExternalServer\ExternalServer;
 use PelicanPanel\ExternalUser\ExternalUser;
+use PelicanPanel\Mounts\Mounts;
+use PelicanPanel\Node\Node;
 use Psr\Http\Message\ResponseInterface;
 use PelicanPanel\Allocations\Allocations;
 use PelicanPanel\Exceptions\ParameterException;
@@ -33,10 +35,13 @@ class Client
 
     private $externalUserHandler;
 
+    private $mountsHandler;
+
+    private $nodeHandler;
+
     /**
      * @param string $url
      * @param string $token
-     * @param string $version
      * @param null $httpClient
      */
     public function __construct(string $url, string $token, $httpClient = null)
@@ -261,5 +266,23 @@ class Client
     {
         if (!$this->externalUserHandler) $this->externalUserHandler = new ExternalUser($this);
         return $this->externalUserHandler;
+    }
+
+    /**
+     * @return Mounts
+     */
+    public function mount(): Mounts
+    {
+        if (!$this->mountsHandler) $this->mountsHandler = new Mounts($this);
+        return $this->mountsHandler;
+    }
+
+    /**
+     * @return Node
+     */
+    public function node(): Node
+    {
+        if (!$this->nodeHandler) $this->nodeHandler = new Node($this);
+        return $this->nodeHandler;
     }
 }
