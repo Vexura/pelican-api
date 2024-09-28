@@ -9,6 +9,9 @@ use PelicanPanel\ExternalServer\ExternalServer;
 use PelicanPanel\ExternalUser\ExternalUser;
 use PelicanPanel\Mounts\Mounts;
 use PelicanPanel\Node\Node;
+use PelicanPanel\Node\NodeConfiguration;
+use PelicanPanel\Node\NodeDeployment;
+use PelicanPanel\Role\Role;
 use Psr\Http\Message\ResponseInterface;
 use PelicanPanel\Allocations\Allocations;
 use PelicanPanel\Exceptions\ParameterException;
@@ -38,6 +41,12 @@ class Client
     private $mountsHandler;
 
     private $nodeHandler;
+
+    private $nodeConfigurationHandler;
+
+    private $nodeDeploymentHandler;
+
+    private $roleHandler;
 
     /**
      * @param string $url
@@ -150,6 +159,11 @@ class Client
                     'verify' => false,
                     'json' => $params
                 ]);
+            case 'PATCH':
+                return $this->getHttpClient()->patch($url, [
+                    'verify' => false,
+                    'json' => $params
+                ]);
             case 'DELETE':
                 return $this->getHttpClient()->delete($url, [
                     'verify' => false,
@@ -224,6 +238,18 @@ class Client
     }
 
     /**
+     * @param string $actionPath
+     * @param array $params
+     * @return mixed|string
+     * @throws GuzzleException
+     */
+    public function patch(string $actionPath, array $params = [])
+    {
+        $response = $this->request($actionPath, $params, 'PATCH');
+        return $this->processRequest($response);
+    }
+
+    /**
      * @return Allocations
      */
     public function allocations(): Allocations
@@ -284,5 +310,32 @@ class Client
     {
         if (!$this->nodeHandler) $this->nodeHandler = new Node($this);
         return $this->nodeHandler;
+    }
+
+    /**
+     * @return NodeConfiguration
+     */
+    public function nodeConfiguration(): NodeConfiguration
+    {
+        if (!$this->nodeConfigurationHandler) $this->nodeConfigurationHandler = new NodeConfiguration($this);
+        return $this->nodeConfigurationHandler;
+    }
+
+    /**
+     * @return NodeDeployment
+     */
+    public function nodeDeployment(): NodeDeployment
+    {
+        if (!$this->nodeDeploymentHandler) $this->nodeDeploymentHandler = new NodeDeployment($this);
+        return $this->nodeDeploymentHandler;
+    }
+
+    /**
+     * @return Role
+     */
+    public function role(): Role
+    {
+        if (!$this->roleHandler) $this->roleHandler = new Role($this);
+        return $this->roleHandler;
     }
 }
