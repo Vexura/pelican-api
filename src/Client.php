@@ -5,6 +5,8 @@ namespace PelicanPanel;
 use GuzzleHttp\Exception\GuzzleException;
 use PelicanPanel\Database\Database;
 use PelicanPanel\Database\Host;
+use PelicanPanel\ExternalServer\ExternalServer;
+use PelicanPanel\ExternalUser\ExternalUser;
 use Psr\Http\Message\ResponseInterface;
 use PelicanPanel\Allocations\Allocations;
 use PelicanPanel\Exceptions\ParameterException;
@@ -13,11 +15,23 @@ use PelicanPanel\Exceptions\ParameterException;
 class Client
 {
     private $httpClient;
-    private Credentials $credentials;
-    private string $apiToken;
+    private $credentials;
+    private $apiToken;
 
-    private string $url;
-    private Allocations $allocationHandler;
+    private $url;
+    private $allocationHandler;
+    /**
+     * @var Database
+     */
+    private $databaseHandler;
+    /**
+     * @var Host
+     */
+    private $databaseHostHandler;
+
+    private $externalServerHandler;
+
+    private $externalUserHandler;
 
     /**
      * @param string $url
@@ -229,5 +243,23 @@ class Client
     {
         if (!$this->databaseHostHandler) $this->databaseHostHandler = new Host($this);
         return $this->databaseHostHandler;
+    }
+
+    /**
+     * @return ExternalServer
+     */
+    public function externalServer(): ExternalServer
+    {
+        if (!$this->externalServerHandler) $this->externalServerHandler = new ExternalServer($this);
+        return $this->externalServerHandler;
+    }
+
+    /**
+     * @return ExternalUser
+     */
+    public function externalUser(): ExternalUser
+    {
+        if (!$this->externalUserHandler) $this->externalUserHandler = new ExternalUser($this);
+        return $this->externalUserHandler;
     }
 }
