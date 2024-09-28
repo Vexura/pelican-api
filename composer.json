@@ -1,0 +1,22 @@
+{
+    "name": "vexura/pelican-api",
+    "description": "Pelican API Client",
+    "type": "libary",
+    "minimum-stability": "stable",
+    "license": "BSD-2-Clause",
+    "autoload": {
+        "psr-4": {
+            "PelicanPanel\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Julien Michell Herwig"
+        }
+    ],
+    "require": {
+        "php": ">=7.2",
+        "guzzlehttp/guzzle": "^7.9",
+        "ext-json": "*"
+    }
+}
